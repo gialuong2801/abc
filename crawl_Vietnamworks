@@ -1,0 +1,43 @@
+#Import the packages
+from selenium import webdriver
+from selenium.webdriver.chrome.options import Options
+from selenium.webdriver.support import expected_conditions as EC
+import time
+
+import requests
+from bs4 import BeautifulSoup
+import array as arr
+import pandas as pd
+#The first line import the Web Driver, and the second import Chrome Options
+#-----------------------------------#
+
+#Chrome Options
+all_link = []
+
+chrome_options = Options()
+chrome_options.add_argument ('--ignore-certificate-errors')
+chrome_options.add_argument ("--igcognito")
+chrome_options.add_argument ("--window-size=1920x1080")
+chrome_options.add_argument ('--headless')
+#-----------------------------------#
+
+driver = webdriver.Chrome(chrome_options=chrome_options, executable_path="C:/webdriver/chromedriver.exe")
+ 
+ #Open url
+url = "https://www.vietnamworks.com/tim-viec-lam/tat-ca-viec-lam"
+driver.get(url)
+time.sleep(2)
+#-----------------------------------#
+
+page_source = driver.page_source
+
+page = page_source
+
+soup = BeautifulSoup(page_source,"html.parser")
+
+
+block_job_list = soup.find_all("div",{"class":"d-flex justify-content-center align-items-center logo-area-wrapper logo-border"})
+for i in block_job_list:
+    link = i.find("a")
+    all_link.append("https://www.vietnamworks.com/"+ link.get("href"))
+
