@@ -1,0 +1,70 @@
+#Import the packages
+from selenium import webdriver
+from selenium.webdriver.chrome.options import Options
+from selenium.webdriver.support import expected_conditions as EC
+import time
+import requests
+from bs4 import BeautifulSoup
+import array as arr
+import pandas
+#The first line import the Web Driver, and the second import Chrome Options
+#-----------------------------------#
+
+#Chrome Options
+content = []
+name_job = []
+name_company = []
+name_location = []
+salary = []
+expiry = []
+upload_date = []
+position = []
+career = []
+skill = []
+language_of_cv = []
+detail_address = []
+number_employees = []
+
+chrome_options = Options()
+chrome_options.add_argument ('--ignore-certificate-errors')
+chrome_options.add_argument ("--igcognito")
+chrome_options.add_argument ("--window-size=1920x1080")
+chrome_options.add_argument ('--headless')
+#-----------------------------------#
+
+driver = webdriver.Chrome(chrome_options=chrome_options, executable_path="C:/webdriver/chromedriver.exe")
+ 
+ #Open url
+url = 'https://www.vietnamworks.com/technical-specialist-scientific-instruments-lam-viec-tai-hcm-chi-tuyen-nam-tuoi-tu-26-32-chi-nhan-cv-tieng-anh-1336108-jv/?source=searchResults&searchType=2&placement=1336109&sortBy=date'
+driver.get(url)
+driver.maximize_window()
+time.sleep(3)
+
+page_source = driver.page_source
+page = page_source
+soup = BeautifulSoup(page_source,"html.parser")
+
+
+name_job.append(soup.find("h1",{"class":"job-title"}).text.replace("\n","").strip())
+
+name_company.append(soup.find("div",{"class","company-name"}).text.replace("\n","").strip())
+
+name_location.append(soup.find("span",{"class":"company-location"}).text.replace("\n","").strip())
+
+salary.append(soup.find("span",{"class":"salary"}).text.replace("\n","").strip())
+
+expiry.append(soup.find("span",{"class":"expiry gray-light"}).text.replace("\n","").strip())
+
+information = soup.find_all("div",{"class":"row summary-item"})
+for i in information:
+    content.append(i.find("span",{"class":"content"}).text.replace('\xa0','').replace('\n', '').replace('  ',"").strip())
+
+upload_date = content[0]
+position = content[1]
+career = content[2]
+skill = content[3]
+language_of_cv = content[4]
+detail_address = content[5]
+number_employees = content[6]
+
+print(salary)
