@@ -3,12 +3,10 @@ from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.support import expected_conditions as EC
 import time
-
 import requests
 from bs4 import BeautifulSoup
 import array as arr
 import pandas
-
 
 
 all_link = []
@@ -17,6 +15,7 @@ name_job = []
 name_company = []
 name_location = []
 salary = []
+all_salary = []
 expiry = []
 upload_date = []
 position = []
@@ -26,52 +25,49 @@ language_of_cv = []
 detail_address = []
 number_employees = []
 
-#Chrome Webdriver options
+
+#The first line import the Web Driver, and the second import Chrome Options
+#-----------------------------------#
+#Chrome Options
 chrome_options = Options()
 chrome_options.add_argument ('--ignore-certificate-errors')
 chrome_options.add_argument ("--igcognito")
 chrome_options.add_argument ("--window-size=1920x1080")
 chrome_options.add_argument ('--headless')
+#-----------------------------------#
 
-
-#Set path to the webdriver
 driver = webdriver.Chrome(chrome_options=chrome_options, executable_path="C:/webdriver/chromedriver.exe")
-
-#Open log-in url
-driver.get("https://secure.vietnamworks.com/login/vi?client_id=3") 
-driver.maximize_window()
-
-#Time-wait
-time.sleep(10)
-
-#Fill the log-in information
-driver.find_element_by_id("email").send_keys("luongdg.bi9159@st.usth.edu.vn") #PUT YOUR EMAIL HERE
-driver.find_element_by_id('login__password').send_keys('Conanpro123')         #PUT YOUR PASSWORD HERE
-driver.find_element_by_id("button-login").click()
 
 #Open url
 url = 'https://www.vietnamworks.com/tim-viec-lam/tat-ca-viec-lam'
 driver.get(url)
+driver.maximize_window()
 time.sleep(10)
-#Set request to webdriver
 page_source = driver.page_source
-page = page_source
 soup = BeautifulSoup(page_source,"html.parser")
 
-#Get all-link
 
 page_num = 1
 
 while True:
 
-    #Send request to get all-link from 1 assemble page
-    block_job_list = soup.find_all("div",{"class":"d-flex justify-content-center align-items-center logo-area-wrapper logo-border"})
+    #insert the scrapping code to scrape this page
+    #.....
+    #.....
+    
+
+    block_job_list = soup.find_all("div",{"class":"block-job-list"})
     for i in block_job_list:
-        link = i.find("a")
-        all_link.append("https://www.vietnamworks.com/"+ link.get("href"))
+        link_catalogue = i.find_all("div",{"class":"col-12 col-lg-8 col-xl-8 p-0 wrap-new"})
+        for j in link_catalogue:
+            link = j.find("a")
+            all_link.append("https://www.vietnamworks.com" + link.get("href"))
+        salary_catalogue = i.find_all("div",{"class":"col-12 col-lg-4 col-xl-4 p-0 col-salary"})
+        for j in salary_catalogue:
+            salary = j.find("span")
+            all_salary.append(salary.text.replace("\n","").strip())
 
-    #Moving to next page
-
+    #moving to next page
     a = driver.find_elements_by_class_name('page-link')    #Finds the pages list in the bottom of the page
 
     if page_num ==1:
